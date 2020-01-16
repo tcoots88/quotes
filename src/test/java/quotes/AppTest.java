@@ -4,11 +4,25 @@
 package quotes;
 
 import org.junit.Test;
+
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
+    @Test
+    public void testAppHasAGreeting() {
         App classUnderTest = new App();
         assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+    }
+    @Test
+    public void testArrayLength() {
+        int fileLength = App.getFileArray().length;
+         assertEquals (138, fileLength);
+    }
+    @Test
+    public void testTryNonExistingFile() {
+        Quote name = App.getFileArray()[0];
+        assertEquals ("Marilyn Monroe", name.author);
     }
 }
