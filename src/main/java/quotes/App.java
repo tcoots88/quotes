@@ -16,8 +16,9 @@ public class App {
     }
     public static void main(String[] args) throws IOException {
 
-//        System.out.println("App.goOnInternetGetQuote() = " + App.goOnInternetGetQuote());
+        System.out.println("App.goOnInternetGetQuote() = " + App.goOnInternetGetQuote());
         goOnInterNetOrLocal();
+        addToCurrentJsonFile();
     }
 
     public static InternetQuote goOnInternetGetQuote() throws IOException {
@@ -52,7 +53,14 @@ public class App {
         System.out.println(quote);
     }
     }
+    public static void addToCurrentJsonFile() throws IOException {
+        Gson gson = new Gson();
+        InternetQuote q = goOnInternetGetQuote();
+        BufferedWriter writer = new BufferedWriter(new FileWriter ("src/main/resources/newJasonFile.json", true));
+        writer.write(gson.toJson(q));
 
+        writer.close();
+    }
     public static Quote [] getFileArray(){
         Gson gson = new Gson();
         System.out.println(new App().getGreeting());
