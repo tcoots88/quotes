@@ -4,17 +4,43 @@
 package quotes;
 
 import com.google.gson.Gson;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class App {
     public String getGreeting() {
         return "Hello world.";
     }
-    public static void main(String[] args) {
-        System.out.println(randomQuoteGenerator(getFileArray()));
+    public static void main(String[] args) throws IOException {
+//        System.out.println(randomQuoteGenerator(getFileArray()));
+//        App.goOnInternetGetQuote();
+        System.out.println("App.goOnInternetGetQuote() = " + App.goOnInternetGetQuote());
     }
+
+    public static InternetQuote goOnInternetGetQuote() throws IOException {
+
+            Gson gson = new Gson();
+
+            URL url = new URL("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+            HttpURLConnection connect = (HttpURLConnection) url.openConnection();
+            connect.setRequestMethod("GET");
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(connect.getInputStream()));
+
+            StringBuilder build = new StringBuilder();
+            String firstLine = input.readLine();
+            while (firstLine != null) {
+                build.append(firstLine);
+                firstLine = input.readLine();
+            }
+            InternetQuote quote = gson.fromJson(String.valueOf(build), InternetQuote.class);
+            return quote;
+
+    }
+
+
     public static Quote [] getFileArray(){
         Gson gson = new Gson();
         System.out.println(new App().getGreeting());

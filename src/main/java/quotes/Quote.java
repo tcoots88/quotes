@@ -17,8 +17,5 @@ public class Quote {
     public String getText() {
         return text;
     }
-public static Quote randomQuoteGenerator (Quote [] quotes){
-    int randomNumber = (int) Math.floor(Math.random() *  quotes.length);
-    return quotes[randomNumber];
-}
+
 }
