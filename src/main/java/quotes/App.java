@@ -4,16 +4,62 @@
 package quotes;
 
 import com.google.gson.Gson;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
+import javax.lang.model.SourceVersion;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class App {
     public String getGreeting() {
         return "Hello world.";
     }
-    public static void main(String[] args) {
-        System.out.println(randomQuoteGenerator(getFileArray()));
+    public static void main(String[] args) throws IOException {
+
+        System.out.println("App.goOnInternetGetQuote() = " + App.goOnInternetGetQuote());
+        goOnInterNetOrLocal();
+        addToCurrentJsonFile();
+    }
+
+    public static InternetQuote goOnInternetGetQuote() throws IOException {
+
+            Gson gson = new Gson();
+
+            URL url = new URL("http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en");
+            HttpURLConnection connect = (HttpURLConnection) url.openConnection();
+            connect.setRequestMethod("GET");
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(connect.getInputStream()));
+
+            StringBuilder build = new StringBuilder();
+            String firstLine = input.readLine();
+            while (firstLine != null) {
+                build.append(firstLine);
+                firstLine = input.readLine();
+            }
+            InternetQuote quote = gson.fromJson(String.valueOf(build), InternetQuote.class);
+            return quote;
+
+    }
+
+    public static void goOnInterNetOrLocal(){
+    try {
+        System.out.println(goOnInternetGetQuote());
+        App.goOnInternetGetQuote();
+    } catch (IOException e) {
+        System.out.println("Failed to query API, sending to Local Storage");
+        Quote[] arrayOfQuotes =App.getFileArray();
+        Quote quote = randomQuoteGenerator(arrayOfQuotes);
+        System.out.println(quote);
+    }
+    }
+    public static void addToCurrentJsonFile() throws IOException {
+        Gson gson = new Gson();
+        InternetQuote q = goOnInternetGetQuote();
+        BufferedWriter writer = new BufferedWriter(new FileWriter ("src/main/resources/newJasonFile.json", true));
+        writer.write(gson.toJson(q));
+
+        writer.close();
     }
     public static Quote [] getFileArray(){
         Gson gson = new Gson();
