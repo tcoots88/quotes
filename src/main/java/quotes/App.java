@@ -5,6 +5,7 @@ package quotes;
 
 import com.google.gson.Gson;
 
+import javax.lang.model.SourceVersion;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -14,9 +15,9 @@ public class App {
         return "Hello world.";
     }
     public static void main(String[] args) throws IOException {
-//        System.out.println(randomQuoteGenerator(getFileArray()));
-//        App.goOnInternetGetQuote();
-        System.out.println("App.goOnInternetGetQuote() = " + App.goOnInternetGetQuote());
+
+//        System.out.println("App.goOnInternetGetQuote() = " + App.goOnInternetGetQuote());
+        goOnInterNetOrLocal();
     }
 
     public static InternetQuote goOnInternetGetQuote() throws IOException {
@@ -40,6 +41,17 @@ public class App {
 
     }
 
+    public static void goOnInterNetOrLocal(){
+    try {
+        System.out.println(goOnInternetGetQuote());
+        App.goOnInternetGetQuote();
+    } catch (IOException e) {
+        System.out.println("Failed to query API, sending to Local Storage");
+        Quote[] arrayOfQuotes =App.getFileArray();
+        Quote quote = randomQuoteGenerator(arrayOfQuotes);
+        System.out.println(quote);
+    }
+    }
 
     public static Quote [] getFileArray(){
         Gson gson = new Gson();
